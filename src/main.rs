@@ -40,7 +40,7 @@ async fn main() {
     }
   };
 
-  Step::builder()
+  let output = Step::builder()
     .api_key(api_key)
     .model(args.model)
     .endpoint(args.endpoint)
@@ -48,4 +48,10 @@ async fn main() {
     .exec(prompt)
     .await
     .unwrap();
+
+  println!("{}", output.content);
+
+  if !output.pass {
+    std::process::exit(1);
+  }
 }
