@@ -1,0 +1,19 @@
+[package]
+name = "defect"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+openai-api-rs = "5.2.6"
+jsonata-rs = "0.3.4"
+bumpalo = "3.9.1"
+anyhow = "1"
+tokio = { version = "1", features = ["full"], optional = true }
+clap = { version = "4.5.30", features = ["derive"], optional = true }
+
+[features]
+binary = ["tokio", "clap"]
+
+[[bin]]
+name = "defect"
+required-features = ["binary"]
