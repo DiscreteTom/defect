@@ -45,14 +45,22 @@ impl Step {
       .message
       .content
       .ok_or(anyhow!("no content"))?;
-    let pass = jsonata.evaluate(Some(&content), None)?;
+
+    let Ok(pass) = jsonata.evaluate(Some(&content), None) else {
+      eprintln!("failed to evaluate pass");
+      return Ok(Output {
+        content,
+        pass: false,
+      });
+    };
 
     Ok(Output {
       content,
       pass: if pass.is_bool() {
         pass.as_bool()
       } else {
-        return Err(anyhow!("pass is not a boolean"));
+        eprintln!("pass is not a boolean");
+        false
       },
     })
   }
