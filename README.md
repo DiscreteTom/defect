@@ -180,10 +180,10 @@ An example of `pre-commit` hook:
 ```bash
 if git rev-parse --verify HEAD >/dev/null 2>&1
 then
-	against=HEAD
+  against=HEAD
 else
-	# Initial commit: diff against an empty tree object
-	against=$(git hash-object -t tree /dev/null)
+  # Initial commit: diff against an empty tree object
+  against=$(git hash-object -t tree /dev/null)
 fi
 
 # Get the diff of the staged files with 100 lines of context
