@@ -1,16 +1,23 @@
 # Defect
 
+![license](https://img.shields.io/github/license/DiscreteTom/defect?style=flat-square)
+[![release](https://img.shields.io/github/v/release/DiscreteTom/defect?style=flat-square)](https://github.com/DiscreteTom/defect/releases/latest)
+
 Call LLM in your pipeline.
-
-## Installation
-
-See the [latest GitHub releases](https://github.com/DiscreteTom/defect/releases/latest) page for pre-built binaries.
 
 ## Features
 
 - Single binary executable. You don't need to be familiar with Python.
 - Customizable prompt. Suitable for all kinds of tasks. See [examples](#prompt-engineering) below.
 - Support OpenAI (or compatible) and AWS Bedrock models.
+
+## Installation
+
+```bash
+wget https://github.com/DiscreteTom/defect/releases/latest/download/defect
+```
+
+See the [latest GitHub releases](https://github.com/DiscreteTom/defect/releases/latest) page for more pre-built binaries.
 
 ## Usage
 
