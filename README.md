@@ -147,7 +147,7 @@ Otherwise, output suggestions in markdown format.
 output=`defect $prompt`
 
 if [ $output != "OK" ]; then
-  cat $output
+  echo $output
   exit 1
 fi
 ```
@@ -183,7 +183,7 @@ $diff
 output=`defect $prompt`
 
 if [ $output != "OK" ]; then
-  cat $output
+  echo $output
   exit 1
 fi
 ```
@@ -222,7 +222,7 @@ fi
     output=`defect $prompt`
 
     if [ $output != "OK" ]; then
-      cat $output
+      echo $output
       exit 1
     fi
   env:
