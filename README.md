@@ -258,7 +258,7 @@ Currently this project doesn't emit any telemetry data.
 
 To collect the LLM usage data, you can use an AI gateway like [OpenRouter](https://openrouter.ai/), [LiteLLM](https://www.litellm.ai/) or [Kong](https://konghq.com/).
 
-To collect the LLM response data, just send the response to your own server or write to your own database.
+To collect the LLM response data, just send the response to your own server or write to your own database using something like a [webhook](#webhook-callback).
 
 <!-- TODO: example -->
 
