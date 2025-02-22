@@ -38,11 +38,14 @@ async fn main() {
     }
   };
 
-  if args.model.starts_with("bedrock/") {
-    BedrockInvoker::new(BedrockConfig { model: args.model })
-      .await
-      .invoke(prompt)
-      .await;
+  let bedrock_prefix = "bedrock/";
+  if args.model.starts_with(bedrock_prefix) {
+    BedrockInvoker::new(BedrockConfig {
+      model: args.model[bedrock_prefix.len()..].to_string(),
+    })
+    .await
+    .invoke(prompt)
+    .await;
   } else {
     OpenAIInvoker::new(OpenAIConfig {
       model: args.model,
