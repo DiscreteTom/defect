@@ -159,6 +159,20 @@ if [ $output != "OK" ]; then
 fi
 ```
 
+#### Webhook Callback
+
+If your workflow execution is aborted by LLM, you may want to send a webhook callback to, for example, Slack, Lark, or your own issue tracker.
+
+```bash
+...
+
+if [ $output != "OK" ]; then
+  echo $output
+  curl -X POST -d "message=$output" https://your-server.com/webhook
+  exit 1
+fi
+```
+
 #### Git Hook
 
 An example of `pre-commit` hook:
