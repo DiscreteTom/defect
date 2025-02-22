@@ -51,7 +51,7 @@ defect --model=deepseek/deepseek-r1 --endpoint=https://openrouter.ai/api/v1 "who
 defect --model=bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0 "who are you"
 ```
 
-### Prompt Engineering
+## Prompt Engineering
 
 The functionality of this tool is highly dependent on the prompt you provide.
 
@@ -134,9 +134,9 @@ If not, provide suggestions to update the documentation.
 
 </details>
 
-### Workflow
+## Workflow
 
-#### Abort a Workflow Execution
+### Abort a Workflow Execution
 
 When using this tool in a workflow or pipeline, you may want to abort the execution if the result is not as expected.
 This requires your LLM output is structured in a way that you can parse it.
@@ -159,7 +159,7 @@ if [ $output != "OK" ]; then
 fi
 ```
 
-#### Webhook Callback
+### Webhook Callback
 
 If your workflow execution is aborted by LLM, you may want to send a webhook callback to, for example, Slack, Lark, or your own issue tracker.
 
@@ -173,7 +173,7 @@ if [ $output != "OK" ]; then
 fi
 ```
 
-#### Git Hook
+### Git Hook
 
 An example of `pre-commit` hook:
 
@@ -209,7 +209,7 @@ if [ $output != "OK" ]; then
 fi
 ```
 
-#### GitHub Actions
+### GitHub Actions
 
 ```yaml
 # download the latest defect binary
@@ -252,7 +252,7 @@ fi
 
 <!-- TODO: add an AWS Lambda example -->
 
-### Telemetry
+## Telemetry
 
 Currently this project doesn't emit any telemetry data.
 
