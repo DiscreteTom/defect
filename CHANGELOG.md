@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `Step`, `step::Builder`, `OpenAIConfig`.
+- Add `Invoker`, `OpenAIInvoker`, `BedrockInvoker`, `OpenAIConfig`, `BedrockConfig`.
 - Add a binary executable `defect`.
 
 [unreleased]: https://github.com/DiscreteTom/defect/compare/v0.1.0...HEAD

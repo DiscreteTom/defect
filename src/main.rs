@@ -1,5 +1,5 @@
 use clap::Parser;
-use defect::{OpenAIConfig, Step};
+use defect::{BedrockConfig, BedrockInvoker, Invoker, OpenAIConfig, OpenAIInvoker};
 use std::{
   env,
   io::{stdin, Read},
@@ -10,10 +10,12 @@ use std::{
 #[command(version, about, long_about = None)]
 struct Args {
   /// The model to use.
+  /// For AWS Bedrock models, use the format "bedrock/<model-id>".
   #[arg(short, long, default_value_t = OpenAIConfig::default().model)]
   model: String,
 
   /// The endpoint to use.
+  /// Only used for OpenAI models.
   #[arg(short, long, default_value_t = OpenAIConfig::default().endpoint)]
   endpoint: String,
 
@@ -36,14 +38,18 @@ async fn main() {
     }
   };
 
-  let output = Step::builder()
-    .api_key(api_key)
-    .model(args.model)
-    .endpoint(args.endpoint)
-    .build()
-    .exec(prompt)
-    .await
-    .unwrap();
-
-  println!("{}", output);
+  if args.model.starts_with("bedrock/") {
+    BedrockInvoker::new(BedrockConfig { model: args.model })
+      .await
+      .invoke(prompt)
+      .await;
+  } else {
+    OpenAIInvoker::new(OpenAIConfig {
+      model: args.model,
+      endpoint: args.endpoint,
+      api_key,
+    })
+    .invoke(prompt)
+    .await;
+  }
 }

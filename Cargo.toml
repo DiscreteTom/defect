@@ -5,7 +5,6 @@ edition = "2021"
 
 [dependencies]
 openai-api-rs = "5.2.6"
-anyhow = "1"
 aws-config = { version = "1.5.16", features = ["behavior-version-latest"] }
 aws-sdk-bedrockruntime = { version = "1.65.0" }
 tokio = { version = "1", features = ["full"] }
