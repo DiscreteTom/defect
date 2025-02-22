@@ -25,7 +25,7 @@ See the [latest GitHub releases](https://github.com/DiscreteTom/defect/releases/
 $ defect --help
 Call LLM in your pipeline. To set an API key, use the "API_KEY" environment variable
 
-Usage: defect.exe [OPTIONS] [PROMPT]
+Usage: defect [OPTIONS] [PROMPT]
 
 Arguments:
   [PROMPT]  The prompt to use. If not provided or equal to "-", the program will read from stdin
