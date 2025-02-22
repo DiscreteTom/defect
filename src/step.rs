@@ -1,10 +1,7 @@
 pub mod builder;
 
-use crate::Output;
 use anyhow::{anyhow, Result};
 use builder::Builder;
-use bumpalo::Bump;
-use jsonata_rs::JsonAta;
 use openai_api_rs::v1::{
   api::OpenAIClient,
   chat_completion::{ChatCompletionMessage, ChatCompletionRequest, Content, MessageRole},
@@ -13,7 +10,6 @@ use openai_api_rs::v1::{
 pub struct Step {
   client: OpenAIClient,
   model: String,
-  pass: String,
 }
 
 impl Step {
@@ -21,10 +17,7 @@ impl Step {
     Builder::new()
   }
 
-  pub async fn exec(&self, text: impl Into<String>) -> Result<Output> {
-    let arena = Bump::new();
-    let jsonata = JsonAta::new(&self.pass, &arena)?;
-
+  pub async fn exec(&self, text: impl Into<String>) -> Result<String> {
     let req = ChatCompletionRequest::new(
       self.model.clone(),
       vec![ChatCompletionMessage {
@@ -37,31 +30,13 @@ impl Step {
     );
     let res = self.client.chat_completion(req).await?;
 
-    let content = res
+    res
       .choices
       .into_iter()
       .next()
       .ok_or(anyhow!("no choices"))?
       .message
       .content
-      .ok_or(anyhow!("no content"))?;
-
-    let Ok(pass) = jsonata.evaluate(Some(&content), None) else {
-      eprintln!("failed to evaluate pass");
-      return Ok(Output {
-        content,
-        pass: false,
-      });
-    };
-
-    Ok(Output {
-      content,
-      pass: if pass.is_bool() {
-        pass.as_bool()
-      } else {
-        eprintln!("pass is not a boolean");
-        false
-      },
-    })
+      .ok_or(anyhow!("no content"))
   }
 }

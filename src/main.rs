@@ -17,10 +17,6 @@ struct Args {
   #[arg(short, long, default_value_t = Config::default().endpoint)]
   endpoint: String,
 
-  /// A JSONata expression to determine if the program should exit with 0.
-  #[arg(short, long, default_value_t = Config::default().pass)]
-  pass: String,
-
   /// The prompt to use.
   /// If not provided or equal to "-", the program will read from stdin.
   prompt: Option<String>,
@@ -49,9 +45,5 @@ async fn main() {
     .await
     .unwrap();
 
-  println!("{}", output.content);
-
-  if !output.pass {
-    std::process::exit(1);
-  }
+  println!("{}", output);
 }

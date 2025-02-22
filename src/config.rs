@@ -2,7 +2,6 @@
 pub struct Config {
   pub model: String,
   pub endpoint: String,
-  pub pass: String,
   pub api_key: String,
 }
 
@@ -11,7 +10,6 @@ impl Config {
     Self {
       model: String::from("gpt-4o"),
       endpoint: String::from("https://api.openai.com/v1"),
-      pass: String::from("pass"),
       api_key: String::new(),
     }
   }
@@ -34,7 +32,6 @@ mod tests {
       Config {
         model: String::from("gpt-4o"),
         endpoint: String::from("https://api.openai.com/v1"),
-        pass: String::from("pass"),
         api_key: String::new(),
       }
       .clone()

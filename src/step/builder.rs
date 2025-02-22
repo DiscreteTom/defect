@@ -38,7 +38,6 @@ impl Builder {
     Step {
       client,
       model: self.config.model,
-      pass: self.config.pass,
     }
   }
 }
