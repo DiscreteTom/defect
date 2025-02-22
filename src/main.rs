@@ -30,7 +30,7 @@ struct Args {
 async fn main() {
   FmtSubscriber::builder().with_writer(stderr).init();
 
-  let api_key = env::var("OPENAI_API_KEY").unwrap_or_default(); // TODO: rename
+  let api_key = env::var("API_KEY").unwrap_or_default();
   if api_key.is_empty() {
     debug!("API key not provided");
   } else {
