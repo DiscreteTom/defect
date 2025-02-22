@@ -4,6 +4,7 @@ use aws_sdk_bedrockruntime::{
   types::{ContentBlock, ConversationRole, Message},
   Client,
 };
+use tracing::trace;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct BedrockConfig {
@@ -40,22 +41,25 @@ impl BedrockInvoker {
 
 impl Invoker for BedrockInvoker {
   async fn invoke(&self, text: impl Into<String>) -> () {
+    let message = Message::builder()
+      .role(ConversationRole::User)
+      .content(ContentBlock::Text(text.into()))
+      .build()
+      .unwrap();
+    trace!("{:?}", message);
+
     let mut res = self
       .client
       .converse_stream()
       .model_id(&self.model)
-      .messages(
-        Message::builder()
-          .role(ConversationRole::User)
-          .content(ContentBlock::Text(text.into()))
-          .build()
-          .unwrap(),
-      )
+      .messages(message)
       .send()
       .await
       .unwrap();
+    trace!("{:?}", res);
 
     while let Some(output) = res.stream.recv().await.unwrap() {
+      trace!("{:?}", output);
       output
         .as_content_block_delta()
         .ok()

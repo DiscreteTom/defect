@@ -3,6 +3,7 @@ use openai_api_rs::v1::{
   api::OpenAIClient,
   chat_completion::{ChatCompletionMessage, ChatCompletionRequest, Content, MessageRole},
 };
+use tracing::trace;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct OpenAIConfig {
@@ -58,7 +59,10 @@ impl Invoker for OpenAIInvoker {
         tool_call_id: None,
       }],
     );
+    trace!("{:?}", req);
+
     let res = self.client.chat_completion(req).await.unwrap();
+    trace!("{:?}", res);
 
     let output = res
       .choices
