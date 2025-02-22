@@ -8,6 +8,7 @@ use tracing::debug;
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
 /// Call LLM in your pipeline.
+/// To set an API key, use the "API_KEY" environment variable.
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
@@ -17,7 +18,7 @@ struct Args {
   model: String,
 
   /// The endpoint to use.
-  /// Only used for OpenAI models.
+  /// Only used for OpenAI (or compatible) models.
   #[arg(short, long, default_value_t = OpenAIConfig::default().endpoint)]
   endpoint: String,
 
