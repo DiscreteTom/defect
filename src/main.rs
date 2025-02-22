@@ -1,5 +1,5 @@
 use clap::Parser;
-use defect::{Config, Step};
+use defect::{OpenAIConfig, Step};
 use std::{
   env,
   io::{stdin, Read},
@@ -10,11 +10,11 @@ use std::{
 #[command(version, about, long_about = None)]
 struct Args {
   /// The model to use.
-  #[arg(short, long, default_value_t = Config::default().model)]
+  #[arg(short, long, default_value_t = OpenAIConfig::default().model)]
   model: String,
 
   /// The endpoint to use.
-  #[arg(short, long, default_value_t = Config::default().endpoint)]
+  #[arg(short, long, default_value_t = OpenAIConfig::default().endpoint)]
   endpoint: String,
 
   /// The prompt to use.

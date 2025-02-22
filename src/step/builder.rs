@@ -1,10 +1,10 @@
 use super::Step;
-use crate::Config;
+use crate::OpenAIConfig;
 use openai_api_rs::v1::api::OpenAIClient;
 
 #[derive(Debug, PartialEq, Clone, Default)]
 pub struct Builder {
-  config: Config,
+  config: OpenAIConfig,
 }
 
 impl Builder {

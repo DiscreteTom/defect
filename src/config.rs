@@ -1,11 +1,11 @@
 #[derive(Debug, PartialEq, Clone)]
-pub struct Config {
+pub struct OpenAIConfig {
   pub model: String,
   pub endpoint: String,
   pub api_key: String,
 }
 
-impl Config {
+impl OpenAIConfig {
   pub fn new() -> Self {
     Self {
       model: String::from("gpt-4o"),
@@ -15,7 +15,7 @@ impl Config {
   }
 }
 
-impl Default for Config {
+impl Default for OpenAIConfig {
   fn default() -> Self {
     Self::new()
   }
@@ -28,8 +28,8 @@ mod tests {
   #[test]
   fn test_config() {
     assert_eq!(
-      Config::default(),
-      Config {
+      OpenAIConfig::default(),
+      OpenAIConfig {
         model: String::from("gpt-4o"),
         endpoint: String::from("https://api.openai.com/v1"),
         api_key: String::new(),
