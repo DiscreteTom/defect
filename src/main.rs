@@ -5,7 +5,7 @@ use std::{
   io::{stderr, stdin, Read},
 };
 use tracing::debug;
-use tracing_subscriber::FmtSubscriber;
+use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
 /// Call LLM in your pipeline.
 #[derive(Parser, Debug)]
@@ -28,7 +28,10 @@ struct Args {
 
 #[tokio::main]
 async fn main() {
-  FmtSubscriber::builder().with_writer(stderr).init();
+  FmtSubscriber::builder()
+    .with_env_filter(EnvFilter::from_default_env())
+    .with_writer(stderr)
+    .init();
 
   let api_key = env::var("API_KEY").unwrap_or_default();
   if api_key.is_empty() {
