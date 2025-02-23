@@ -40,14 +40,17 @@ Options:
 ### Choose a Model
 
 ```bash
-# for OpenAI models, make sure you have set the "API_KEY" environment variable
+# You can use `--model` to specify a custom OpenAI model.
+# Make sure you have set the "API_KEY" environment variable.
 defect "who are you"
 defect --model=gpt-4o "who are you"
 
-# for OpenAI compatible models, e.g. OpenRouter
+# For OpenAI compatible models, e.g. OpenRouter, specify a custom endpoint.
+# Make sure you have set the "API_KEY" environment variable.
 defect --model=deepseek/deepseek-r1 --endpoint=https://openrouter.ai/api/v1 "who are you"
 
-# for AWS Bedrock models, make sure you have AWS credentials set up
+# For AWS Bedrock models, use the format `bedrock/<model-id>` to specify the model.
+# Make sure you have AWS credentials set up.
 defect --model=bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0 "who are you"
 ```
 
