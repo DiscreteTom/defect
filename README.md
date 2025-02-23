@@ -181,6 +181,8 @@ fi
 An example of `pre-commit` hook:
 
 ```bash
+#!/bin/sh
+
 if git rev-parse --verify HEAD >/dev/null 2>&1
 then
   against=HEAD
