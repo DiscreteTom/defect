@@ -62,7 +62,7 @@ You can construct complex prompts in bash scripts and pass it to the tool.
 
 ```bash
 prompt="Summarize the file. <file>`cat README.md`</file>"
-defect $prompt
+defect "$prompt"
 ```
 
 Here are some prompt examples.
@@ -154,10 +154,10 @@ If you think the code is correct, output 'OK' with nothing else.
 Otherwise, output suggestions in markdown format.
 "
 
-output=$(defect $prompt)
+output=$(defect "$prompt")
 
 if [ "$output" != "OK" ]; then
-  echo $output
+  echo "$output"
   exit 1
 fi
 ```
@@ -170,7 +170,7 @@ If your workflow execution is aborted by LLM, you may want to send a webhook cal
 ...
 
 if [ "$output" != "OK" ]; then
-  echo $output
+  echo "$output"
   curl -X POST -d "message=$output" https://your-server.com/webhook
   exit 1
 fi
@@ -206,10 +206,10 @@ $diff
 </diff>
 "
 
-output=$(defect $prompt)
+output=$(defect "$prompt")
 
 if [ "$output" != "OK" ]; then
-  echo $output
+  echo "$output"
   exit 1
 fi
 ```
@@ -245,10 +245,10 @@ fi
     </diff>
     "
 
-    output=$(defect $prompt)
+    output=$(defect "$prompt")
 
     if [ "$output" != "OK" ]; then
-      echo $output
+      echo "$output"
       exit 1
     fi
   env:
@@ -269,14 +269,14 @@ To collect the LLM response data, just send the response to your own server or w
 ...
 
 if [ "$output" != "OK" ]; then
-  echo $output
+  echo "$output"
 
   # e.g. with a webhook callback
   curl -X POST -d "message=$output" https://your-server.com/webhook
 
   # e.g. save to AWS S3 so you can query using AWS Athena
   timestamp=$(date +%s)
-  echo $output > $timestamp.json
+  echo "$output" > $timestamp.json
   date=$(date +'%Y/%m/%d')
   author=$(git log -1 --pretty=format:'%an')
   aws s3 cp $timestamp.json "s3://your-bucket/suggestions/$date/$author/$timestamp.json"
