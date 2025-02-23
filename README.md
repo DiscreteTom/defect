@@ -154,7 +154,7 @@ If you think the code is correct, output 'OK' with nothing else.
 Otherwise, output suggestions in markdown format.
 "
 
-output=`defect $prompt`
+output=$(defect $prompt)
 
 if [ $output != "OK" ]; then
   echo $output
@@ -192,7 +192,7 @@ else
 fi
 
 # Get the diff of the staged files with 100 lines of context
-diff=`git diff --cached -U100 $against`
+diff=$(git diff --cached -U100 $against)
 
 prompt="
 You are a coding expert.
@@ -206,7 +206,7 @@ $diff
 </diff>
 "
 
-output=`defect $prompt`
+output=$(defect $prompt)
 
 if [ $output != "OK" ]; then
   echo $output
@@ -231,7 +231,7 @@ fi
 
 # review the diff
 - run: |
-    diff=`cat diff`
+    diff=$(cat diff)
 
     prompt="
     You are a coding expert.
@@ -245,7 +245,7 @@ fi
     </diff>
     "
 
-    output=`defect $prompt`
+    output=$(defect $prompt)
 
     if [ $output != "OK" ]; then
       echo $output
@@ -275,10 +275,10 @@ if [ $output != "OK" ]; then
   curl -X POST -d "message=$output" https://your-server.com/webhook
 
   # e.g. save to AWS S3 so you can query using AWS Athena
-  timestamp=`date +%s`
+  timestamp=$(date +%s)
   echo $output > $timestamp.json
-  date=`date +'%Y/%m/%d'`
-  author=`git log -1 --pretty=format:'%an'`
+  date=$(date +'%Y/%m/%d')
+  author=$(git log -1 --pretty=format:'%an')
   aws s3 cp $timestamp.json "s3://your-bucket/suggestions/$date/$author/$timestamp.json"
 
   exit 1
