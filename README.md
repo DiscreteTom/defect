@@ -171,7 +171,12 @@ If your workflow execution is aborted by LLM, you may want to send a webhook cal
 
 if [ "$output" != "OK" ]; then
   echo "$output"
-  curl -X POST -d "message=$output" https://your-server.com/webhook
+
+  commit=$(git rev-parse HEAD)
+  escaped_output=$(jq -n --arg val "$output" '$val')
+  body="{\"commit\":\"$commit\",\"feedback\":\"$escaped_output\"}"
+  curl -X POST -d "$body" https://your-server.com/webhook
+
   exit 1
 fi
 ```
@@ -272,11 +277,28 @@ if [ "$output" != "OK" ]; then
   echo "$output"
 
   # e.g. with a webhook callback
-  curl -X POST -d "message=$output" https://your-server.com/webhook
+  curl -X POST -d "some-data" https://your-server.com/webhook
 
-  # e.g. save to AWS S3 so you can query using AWS Athena
+  # e.g. convert output to metrics using LLM
+  # and save to AWS S3 so you can query using AWS Athena
+  metrics_prompt="
+  Below is a code review feedback,
+  tell me how many suggestions are there.
+  You should output a JSON object with the following format:
+
+  <format>
+  {"suggestions": 123}
+  </format>
+
+  You should only output the JSON object with nothing else.
+
+  <feedback>
+  $output
+  </feedback>
+  "
+  metrics=$(defect "$metrics_prompt")
   timestamp=$(date +%s)
-  echo "$output" > $timestamp.json
+  echo "$metrics" > $timestamp.json
   date=$(date +'%Y/%m/%d')
   author=$(git log -1 --pretty=format:'%an')
   aws s3 cp $timestamp.json "s3://your-bucket/suggestions/$date/$author/$timestamp.json"
