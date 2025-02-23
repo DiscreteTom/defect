@@ -309,6 +309,10 @@ if [ "$output" != "OK" ]; then
 fi
 ```
 
+## Demo
+
+See [`defect-demo`](https://github.com/DiscreteTom/defect-demo) for a demo project.
+
 ## Debug
 
 This project uses [EnvFilter](https://docs.rs/tracing-subscriber/latest/tracing_subscriber/filter/struct.EnvFilter.html) to filter logs.
