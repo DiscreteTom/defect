@@ -40,7 +40,7 @@ impl BedrockInvoker {
 }
 
 impl Invoker for BedrockInvoker {
-  async fn invoke(&self, text: impl Into<String>) -> () {
+  async fn invoke(&self, text: impl Into<String>) {
     let message = Message::builder()
       .role(ConversationRole::User)
       .content(ContentBlock::Text(text.into()))
@@ -65,9 +65,9 @@ impl Invoker for BedrockInvoker {
         .ok()
         .and_then(|e| e.delta.as_ref())
         .and_then(|delta| delta.as_text().ok())
-        .map(|text| print!("{}", text));
+        .inspect(|text| print!("{}", text));
     }
 
-    println!("");
+    println!();
   }
 }
