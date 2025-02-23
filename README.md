@@ -156,7 +156,7 @@ Otherwise, output suggestions in markdown format.
 
 output=$(defect $prompt)
 
-if [ $output != "OK" ]; then
+if [ "$output" != "OK" ]; then
   echo $output
   exit 1
 fi
@@ -169,7 +169,7 @@ If your workflow execution is aborted by LLM, you may want to send a webhook cal
 ```bash
 ...
 
-if [ $output != "OK" ]; then
+if [ "$output" != "OK" ]; then
   echo $output
   curl -X POST -d "message=$output" https://your-server.com/webhook
   exit 1
@@ -208,7 +208,7 @@ $diff
 
 output=$(defect $prompt)
 
-if [ $output != "OK" ]; then
+if [ "$output" != "OK" ]; then
   echo $output
   exit 1
 fi
@@ -247,7 +247,7 @@ fi
 
     output=$(defect $prompt)
 
-    if [ $output != "OK" ]; then
+    if [ "$output" != "OK" ]; then
       echo $output
       exit 1
     fi
@@ -268,7 +268,7 @@ To collect the LLM response data, just send the response to your own server or w
 ```bash
 ...
 
-if [ $output != "OK" ]; then
+if [ "$output" != "OK" ]; then
   echo $output
 
   # e.g. with a webhook callback
