@@ -174,7 +174,7 @@ if [ "$output" != "OK" ]; then
 
   commit=$(git rev-parse HEAD)
   escaped_output=$(jq -n --arg val "$output" '$val')
-  body="{\"commit\":\"$commit\",\"feedback\":\"$escaped_output\"}"
+  body="{\"commit\":\"$commit\",\"feedback\":$escaped_output}"
   curl -X POST -d "$body" https://your-server.com/webhook
 
   exit 1
@@ -235,10 +235,6 @@ fi
 # get the diff of the latest commit
 - run: |
     git diff -U100 HEAD^ HEAD > diff
-
-# or, get the diff of a PR
-- run: |
-    git diff -U100 origin/master HEAD > diff
 
 # review the diff
 - run: |
