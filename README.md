@@ -258,9 +258,27 @@ Currently this project doesn't emit any telemetry data.
 
 To collect the LLM usage data, you can use an AI gateway like [OpenRouter](https://openrouter.ai/), [LiteLLM](https://www.litellm.ai/) or [Kong](https://konghq.com/).
 
-To collect the LLM response data, just send the response to your own server or write to your own database using something like a [webhook](#webhook-callback).
+To collect the LLM response data, just send the response to your own server or write to your own database.
 
-<!-- TODO: example -->
+```bash
+...
+
+if [ $output != "OK" ]; then
+  echo $output
+
+  # e.g. with a webhook callback
+  curl -X POST -d "message=$output" https://your-server.com/webhook
+
+  # e.g. save to AWS S3 so you can query using AWS Athena
+  timestamp=`date +%s`
+  echo $output > $timestamp.json
+  date=`date +'%Y/%m/%d'`
+  author=`git log -1 --pretty=format:'%an'`
+  aws s3 cp $timestamp.json "s3://your-bucket/suggestions/$date/$author/$timestamp.json"
+
+  exit 1
+fi
+```
 
 ## Debug
 
