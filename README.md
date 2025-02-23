@@ -3,7 +3,7 @@
 ![license](https://img.shields.io/github/license/DiscreteTom/defect?style=flat-square)
 [![release](https://img.shields.io/github/v/release/DiscreteTom/defect?style=flat-square)](https://github.com/DiscreteTom/defect/releases/latest)
 
-Call LLM in your pipeline, e.g. local git hook, GitHub Actions and more.
+Call LLM in your pipeline, e.g. local [git hook](#git-hook), [GitHub Actions](#github-actions) and more.
 
 ## Features
 
