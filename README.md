@@ -222,9 +222,15 @@ fi
 ### GitHub Actions
 
 ```yaml
+# fetch 2 commits
+- uses: actions/checkout@v4
+  with:
+    fetch-depth: 2
+
 # download the latest defect binary
 - run: |
     wget https://github.com/DiscreteTom/defect/releases/latest/download/defect
+    chmod +x ./defect
 
 # get the diff of the latest commit
 - run: |
@@ -250,7 +256,7 @@ fi
     </diff>
     "
 
-    output=$(defect "$prompt")
+    output=$(./defect "$prompt")
 
     if [ "$output" != "OK" ]; then
       echo "$output"
