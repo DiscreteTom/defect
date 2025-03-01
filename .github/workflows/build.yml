@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: DiscreteTom/setup-rust-cross@v0.1.0
+      - uses: DiscreteTom/setup-rust-cross@v0.1.1
 
       - run: |
           cross build --release --target x86_64-unknown-linux-musl
