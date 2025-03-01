@@ -1,5 +1,8 @@
+mod bedrock;
+mod openai;
+
+use self::{bedrock::invoke_bedrock, openai::invoke_openai};
 use clap::{Parser, ValueEnum};
-use defect::{invoke_bedrock, invoke_openai};
 use std::io::{stderr, stdin, Read};
 use tracing::debug;
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
