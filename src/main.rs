@@ -1,9 +1,6 @@
 use clap::{Parser, ValueEnum};
 use defect::{BedrockConfig, BedrockInvoker, Invoker, OpenAIConfig, OpenAIInvoker};
-use std::{
-  env,
-  io::{stderr, stdin, Read},
-};
+use std::io::{stderr, stdin, Read};
 use tracing::debug;
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
@@ -15,18 +12,12 @@ enum Schema {
 }
 
 /// Call LLMs in your pipeline.
-/// To set an API key, use the "DEFECT_API_KEY" environment variable.
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
   /// The model to use.
   #[arg(short, long, default_value_t = OpenAIConfig::default().model)]
   model: String,
-
-  /// The endpoint to use.
-  /// Only effective for OpenAI compatible models.
-  #[arg(short, long, default_value_t = OpenAIConfig::default().endpoint)]
-  endpoint: String,
 
   /// The API schema to use.
   #[arg(short, long, value_enum, default_value_t = Schema::OpenAI)]
@@ -43,13 +34,6 @@ async fn main() {
     .with_env_filter(EnvFilter::from_default_env())
     .with_writer(stderr)
     .init();
-
-  let api_key = env::var("DEFECT_API_KEY").unwrap_or_default();
-  if api_key.is_empty() {
-    debug!("API key not provided");
-  } else {
-    debug!("API key provided, length: {}", api_key.len());
-  }
 
   let args = Args::parse();
 
@@ -78,14 +62,9 @@ async fn main() {
     }
     Schema::OpenAI => {
       debug!("Using OpenAI model: {}", args.model);
-      debug!("Using OpenAI endpoint: {}", args.endpoint);
-      OpenAIInvoker::new(OpenAIConfig {
-        model: args.model,
-        endpoint: args.endpoint,
-        api_key,
-      })
-      .invoke(prompt)
-      .await;
+      OpenAIInvoker::new(OpenAIConfig { model: args.model })
+        .invoke(prompt)
+        .await;
     }
   }
 }

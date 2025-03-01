@@ -1,23 +1,19 @@
 use crate::Invoker;
-use openai_api_rs::v1::{
-  api::OpenAIClient,
-  chat_completion::{ChatCompletionMessage, ChatCompletionRequest, Content, MessageRole},
+use openai::{
+  chat::{ChatCompletionDelta, ChatCompletionMessage, ChatCompletionMessageRole},
+  Credentials,
 };
 use tracing::trace;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct OpenAIConfig {
   pub model: String,
-  pub endpoint: String,
-  pub api_key: String,
 }
 
 impl OpenAIConfig {
   pub fn new() -> Self {
     Self {
       model: String::from("gpt-4o"),
-      endpoint: String::from("https://api.openai.com/v1"),
-      api_key: String::new(),
     }
   }
 }
@@ -29,19 +25,14 @@ impl Default for OpenAIConfig {
 }
 
 pub struct OpenAIInvoker {
-  client: OpenAIClient,
   model: String,
+  credentials: Credentials,
 }
 
 impl OpenAIInvoker {
   pub fn new(config: OpenAIConfig) -> Self {
     Self {
-      client: OpenAIClient::builder()
-        .with_api_key(config.api_key)
-        .with_endpoint(config.endpoint)
-        .build()
-        // with api_key and endpoint provided, this should never panic
-        .unwrap(),
+      credentials: Credentials::from_env(),
       model: config.model,
     }
   }
@@ -49,31 +40,27 @@ impl OpenAIInvoker {
 
 impl Invoker for OpenAIInvoker {
   async fn invoke(&self, text: impl Into<String>) {
-    let req = ChatCompletionRequest::new(
-      self.model.clone(),
-      vec![ChatCompletionMessage {
-        role: MessageRole::user,
-        content: Content::Text(text.into()),
-        name: None,
-        tool_calls: None,
-        tool_call_id: None,
-      }],
-    );
-    trace!("{:?}", req);
-
-    let res = self.client.chat_completion(req).await.unwrap();
-    trace!("{:?}", res);
-
-    let output = res
-      .choices
-      .into_iter()
-      .next()
-      .unwrap()
-      .message
-      .content
+    let messages = vec![ChatCompletionMessage {
+      role: ChatCompletionMessageRole::User,
+      content: Some(text.into()),
+      ..Default::default()
+    }];
+    trace!("messages: {:?}", messages);
+    let mut chat_stream = ChatCompletionDelta::builder(&self.model, messages)
+      .credentials(self.credentials.clone()) // TODO: prevent clone
+      .create_stream()
+      .await
       .unwrap();
 
-    println!("{}", output);
+    while let Some(delta) = chat_stream.recv().await {
+      let choice = &delta.choices[0];
+      if let Some(content) = &choice.delta.content {
+        print!("{}", content);
+      }
+      if let Some(_) = &choice.finish_reason {
+        println!();
+      }
+    }
   }
 }
 
@@ -87,8 +74,6 @@ mod tests {
       OpenAIConfig::default(),
       OpenAIConfig {
         model: String::from("gpt-4o"),
-        endpoint: String::from("https://api.openai.com/v1"),
-        api_key: String::new(),
       }
       .clone()
     );
