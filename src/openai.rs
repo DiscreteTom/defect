@@ -31,7 +31,7 @@ pub async fn invoke_openai(model: String, text: String) {
     if let Some(content) = &choice.delta.content {
       print!("{}", content);
     }
-    if let Some(_) = &choice.finish_reason {
+    if choice.finish_reason.is_some() {
       println!();
       return;
     }
