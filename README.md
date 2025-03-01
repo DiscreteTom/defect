@@ -14,7 +14,9 @@ Call LLM in your pipeline, e.g. local [git hook](#git-hook), [GitHub Actions](#g
 ## Installation
 
 ```bash
-wget https://github.com/DiscreteTom/defect/releases/latest/download/defect
+wget https://github.com/DiscreteTom/defect/releases/latest/download/defect-x86_64
+mv defect-x86_64 defect
+chmod +x defect
 ```
 
 See the [latest GitHub releases](https://github.com/DiscreteTom/defect/releases/latest) page for more pre-built binaries.
