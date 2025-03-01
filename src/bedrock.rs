@@ -3,7 +3,7 @@ use aws_sdk_bedrockruntime::{
   types::{ContentBlock, ConversationRole, ConverseStreamOutput::*, Message},
   Client,
 };
-use tracing::trace;
+use tracing::{debug, trace};
 
 pub async fn invoke_bedrock(model: String, text: String) {
   let message = Message::builder()
@@ -11,7 +11,7 @@ pub async fn invoke_bedrock(model: String, text: String) {
     .content(ContentBlock::Text(text))
     .build()
     .unwrap();
-  trace!("{:?}", message);
+  debug!("{:?}", message);
 
   let mut res = Client::new(&load_from_env().await)
     .converse_stream()
@@ -20,7 +20,7 @@ pub async fn invoke_bedrock(model: String, text: String) {
     .send()
     .await
     .unwrap();
-  trace!("{:?}", res);
+  debug!("{:?}", res);
 
   while let Some(output) = res.stream.recv().await.unwrap() {
     trace!("{:?}", output);

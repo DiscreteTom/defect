@@ -3,13 +3,13 @@ use openai::{
   Credentials,
 };
 use std::env;
-use tracing::trace;
+use tracing::{debug, trace};
 
 pub async fn invoke_openai(model: String, text: String) {
   let api_key = env::var("OPENAI_API_KEY").expect("OPENAI_API_KEY must be set");
-  trace!("OPENAI_API_KEY length: {}", api_key.len());
+  debug!("OPENAI_API_KEY length: {}", api_key.len());
   let base_url = env::var("OPENAI_API_BASE").unwrap_or("https://api.openai.com/v1/".to_string());
-  trace!("OPENAI_API_BASE: {}", base_url);
+  debug!("OPENAI_API_BASE: {}", base_url);
   let credentials = Credentials::new(api_key, base_url);
 
   let messages = vec![ChatCompletionMessage {
@@ -17,7 +17,7 @@ pub async fn invoke_openai(model: String, text: String) {
     content: Some(text),
     ..Default::default()
   }];
-  trace!("{:?}", messages);
+  debug!("{:?}", messages);
 
   let mut chat_stream = ChatCompletionDelta::builder(&model, messages)
     .credentials(credentials)
