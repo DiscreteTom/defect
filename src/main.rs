@@ -1,5 +1,5 @@
 use clap::{Parser, ValueEnum};
-use defect::{BedrockConfig, BedrockInvoker, Invoker, OpenAIConfig, OpenAIInvoker};
+use defect::{invoke_bedrock, invoke_openai};
 use std::io::{stderr, stdin, Read};
 use tracing::debug;
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
@@ -16,7 +16,7 @@ enum Schema {
 #[command(version, about, long_about = None)]
 struct Args {
   /// The model to use.
-  #[arg(short, long, default_value_t = OpenAIConfig::default().model)]
+  #[arg(short, long, default_value_t = String::from("gpt-4o"))]
   model: String,
 
   /// The API schema to use.
@@ -55,16 +55,11 @@ async fn main() {
   match args.schema {
     Schema::Bedrock => {
       debug!("Using Bedrock model: {}", args.model);
-      BedrockInvoker::new(BedrockConfig { model: args.model })
-        .await
-        .invoke(prompt)
-        .await;
+      invoke_bedrock(args.model, prompt).await;
     }
     Schema::OpenAI => {
       debug!("Using OpenAI model: {}", args.model);
-      OpenAIInvoker::new(OpenAIConfig { model: args.model })
-        .invoke(prompt)
-        .await;
+      invoke_openai(args.model, prompt).await;
     }
   }
 }
