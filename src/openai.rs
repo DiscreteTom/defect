@@ -59,8 +59,10 @@ impl Invoker for OpenAIInvoker {
       }
       if let Some(_) = &choice.finish_reason {
         println!();
+        return;
       }
     }
+    panic!("Incomplete stream");
   }
 }
 
