@@ -1,6 +1,6 @@
 use aws_config::load_from_env;
 use aws_sdk_bedrockruntime::{
-  types::{ContentBlock, ConversationRole, Message},
+  types::{ContentBlock, ConversationRole, ConverseStreamOutput::*, Message},
   Client,
 };
 use tracing::trace;
@@ -24,13 +24,17 @@ pub async fn invoke_bedrock(model: String, text: String) {
 
   while let Some(output) = res.stream.recv().await.unwrap() {
     trace!("{:?}", output);
-    output
-      .as_content_block_delta()
-      .ok()
-      .and_then(|e| e.delta.as_ref())
-      .and_then(|delta| delta.as_text().ok())
-      .inspect(|text| print!("{}", text));
-  }
 
-  println!();
+    match output {
+      ContentBlockDelta(e) => {
+        print!("{}", e.delta.unwrap().as_text().unwrap());
+      }
+      ContentBlockStop(_) => {
+        println!();
+        return;
+      }
+      _ => {}
+    }
+  }
+  unreachable!("Incomplete stream")
 }
