@@ -25,7 +25,7 @@ See the [latest GitHub releases](https://github.com/DiscreteTom/defect/releases/
 
 ```bash
 $ defect --help
-Call LLMs in your pipeline. To set an API key, use the "DEFECT_API_KEY" environment variable
+Call LLMs in your pipeline
 
 Usage: defect [OPTIONS] [PROMPT]
 
@@ -33,24 +33,26 @@ Arguments:
   [PROMPT]  The prompt to use. If not provided or equal to "-", the program will read from stdin
 
 Options:
-  -m, --model <MODEL>        The model to use [default: gpt-4o]
-  -e, --endpoint <ENDPOINT>  The endpoint to use. Only effective for OpenAI compatible models [default: https://api.openai.com/v1]
-  -s, --schema <SCHEMA>      The API schema to use [default: open-ai] [possible values: open-ai, bedrock]
-  -h, --help                 Print help
-  -V, --version              Print version
+  -m, --model <MODEL>    The model to use [default: gpt-4o]
+  -s, --schema <SCHEMA>  The API schema to use [default: openai] [possible values: openai, bedrock]
+  -h, --help             Print help
+  -V, --version          Print version
 ```
 
 ### Choose a Model
 
 ```bash
 # You can use `--model` to specify a custom OpenAI model.
-# Make sure you have set the "DEFECT_API_KEY" environment variable.
+# Make sure you have set the "OPENAI_API_KEY" environment variable.
+export OPENAI_API_KEY=""
 defect "who are you"
 defect --model=gpt-4o "who are you"
 
-# For OpenAI compatible models, e.g. OpenRouter, specify a custom endpoint.
-# Make sure you have set the "DEFECT_API_KEY" environment variable.
-defect --model=deepseek/deepseek-r1 --endpoint=https://openrouter.ai/api/v1 "who are you"
+# For OpenAI compatible models, e.g. OpenRouter,
+# specify a custom endpoint via the "OPENAI_API_BASE" environment variable.
+# Make sure you have also set the "OPENAI_API_KEY" environment variable.
+export OPENAI_API_BASE="https://openrouter.ai/api/v1"
+defect --model=deepseek/deepseek-r1 "who are you"
 
 # For AWS Bedrock models, set the `schema` option.
 # Make sure you have AWS credentials set up.
@@ -263,7 +265,7 @@ fi
       exit 1
     fi
   env:
-    DEFECT_API_KEY: ${{ secrets.DEFECT_API_KEY }}
+    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 ```
 
 ## Telemetry
