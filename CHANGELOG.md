@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## Added
+### Added
 
 - Add pre-built static-linked binaries for x86_64 linux, aarch64 linux and x86_64 windows.
 
