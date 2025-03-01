@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- The pre-built binaries are zipped.
+
 ## [0.3.0] - 2025-03-01
 
 ### Added

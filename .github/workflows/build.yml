@@ -12,13 +12,10 @@ jobs:
       matrix:
         include:
           - target: x86_64-unknown-linux-musl
-            artifact: defect-x86_64
             extension: ""
           - target: aarch64-unknown-linux-musl
-            artifact: defect-aarch64
             extension: ""
           - target: x86_64-pc-windows-gnu
-            artifact: defect-x86_64
             extension: ".exe"
     steps:
       - uses: actions/checkout@v4
@@ -29,11 +26,11 @@ jobs:
         run: |
           cross build --release --target ${{ matrix.target }}
 
-      - name: Rename artifact
+      - name: Zip artifact
         run: |
-          mv target/${{ matrix.target }}/release/defect${{ matrix.extension }} target/${{ matrix.target }}/release/${{ matrix.artifact }}${{ matrix.extension }}
+          zip -j defect-${{ inputs.version }}-${{ matrix.target }}.zip target/${{ matrix.target }}/release/defect${{ matrix.extension }}
 
       - name: Upload artifact to release
-        run: gh release upload ${{ inputs.version }} target/${{ matrix.target }}/release/${{ matrix.artifact }}${{ matrix.extension }}
+        run: gh release upload ${{ inputs.version }} defect-${{ inputs.version }}-${{ matrix.target }}.zip
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
