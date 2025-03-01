@@ -15,7 +15,7 @@ enum Schema {
 }
 
 /// Call LLMs in your pipeline.
-/// To set an API key, use the "API_KEY" environment variable.
+/// To set an API key, use the "DEFECT_API_KEY" environment variable.
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
@@ -44,7 +44,7 @@ async fn main() {
     .with_writer(stderr)
     .init();
 
-  let api_key = env::var("API_KEY").unwrap_or_default();
+  let api_key = env::var("DEFECT_API_KEY").unwrap_or_default();
   if api_key.is_empty() {
     debug!("API key not provided");
   } else {

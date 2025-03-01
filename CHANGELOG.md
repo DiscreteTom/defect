@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - To call AWS Bedrock, the CLI option `schema` is required.
+- Rename environment variable `API_KEY` to `DEFECT_API_KEY`.
 
 ## [0.1.0] - 2025-02-23
 

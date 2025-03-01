@@ -25,7 +25,7 @@ See the [latest GitHub releases](https://github.com/DiscreteTom/defect/releases/
 
 ```bash
 $ defect --help
-Call LLMs in your pipeline. To set an API key, use the "API_KEY" environment variable
+Call LLMs in your pipeline. To set an API key, use the "DEFECT_API_KEY" environment variable
 
 Usage: defect [OPTIONS] [PROMPT]
 
@@ -44,12 +44,12 @@ Options:
 
 ```bash
 # You can use `--model` to specify a custom OpenAI model.
-# Make sure you have set the "API_KEY" environment variable.
+# Make sure you have set the "DEFECT_API_KEY" environment variable.
 defect "who are you"
 defect --model=gpt-4o "who are you"
 
 # For OpenAI compatible models, e.g. OpenRouter, specify a custom endpoint.
-# Make sure you have set the "API_KEY" environment variable.
+# Make sure you have set the "DEFECT_API_KEY" environment variable.
 defect --model=deepseek/deepseek-r1 --endpoint=https://openrouter.ai/api/v1 "who are you"
 
 # For AWS Bedrock models, set the `schema` option.
@@ -263,7 +263,7 @@ fi
       exit 1
     fi
   env:
-    API_KEY: ${{ secrets.API_KEY }}
+    DEFECT_API_KEY: ${{ secrets.DEFECT_API_KEY }}
 ```
 
 ## Telemetry
