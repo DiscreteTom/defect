@@ -3,11 +3,11 @@
 ![license](https://img.shields.io/github/license/DiscreteTom/defect?style=flat-square)
 [![release](https://img.shields.io/github/v/release/DiscreteTom/defect?style=flat-square)](https://github.com/DiscreteTom/defect/releases/latest)
 
-Call LLM in your pipeline, e.g. local [git hook](#git-hook), [GitHub Actions](#github-actions) and more.
+Call LLMs in your pipeline, e.g. local [git hook](#git-hook), [GitHub Actions](#github-actions) and more.
 
 ## Features
 
-- Single binary executable. You don't need to be familiar with Python.
+- Single static-linked binary executable. You don't need to be familiar with Python or any framework.
 - Customizable prompt. Suitable for all kinds of tasks. See [examples](#prompt-engineering) below.
 - Support OpenAI (or compatible) and AWS Bedrock models.
 
@@ -25,7 +25,7 @@ See the [latest GitHub releases](https://github.com/DiscreteTom/defect/releases/
 
 ```bash
 $ defect --help
-Call LLM in your pipeline. To set an API key, use the "API_KEY" environment variable
+Call LLMs in your pipeline. To set an API key, use the "API_KEY" environment variable
 
 Usage: defect [OPTIONS] [PROMPT]
 
@@ -33,8 +33,9 @@ Arguments:
   [PROMPT]  The prompt to use. If not provided or equal to "-", the program will read from stdin
 
 Options:
-  -m, --model <MODEL>        The model to use. For AWS Bedrock models, use the format "bedrock/<model-id>" [default: gpt-4o]
-  -e, --endpoint <ENDPOINT>  The endpoint to use. Only used for OpenAI (or compatible) models [default: https://api.openai.com/v1]
+  -m, --model <MODEL>        The model to use [default: gpt-4o]
+  -e, --endpoint <ENDPOINT>  The endpoint to use. Only effective for OpenAI compatible models [default: https://api.openai.com/v1]
+  -s, --schema <SCHEMA>      The API schema to use [default: open-ai] [possible values: open-ai, bedrock]
   -h, --help                 Print help
   -V, --version              Print version
 ```
@@ -51,9 +52,9 @@ defect --model=gpt-4o "who are you"
 # Make sure you have set the "API_KEY" environment variable.
 defect --model=deepseek/deepseek-r1 --endpoint=https://openrouter.ai/api/v1 "who are you"
 
-# For AWS Bedrock models, use the format `bedrock/<model-id>` to specify the model.
+# For AWS Bedrock models, set the `schema` option.
 # Make sure you have AWS credentials set up.
-defect --model=bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0 "who are you"
+defect --schema bedrock --model=anthropic.claude-3-5-sonnet-20240620-v1:0 "who are you"
 ```
 
 ## Prompt Engineering
@@ -231,8 +232,9 @@ fi
 
 # download the latest defect binary
 - run: |
-    wget https://github.com/DiscreteTom/defect/releases/latest/download/defect
-    chmod +x ./defect
+    wget https://github.com/DiscreteTom/defect/releases/download/v0.2.0/defect-x86_64
+    mv defect-x86_64 defect
+    chmod +x defect
 
 # get the diff of the latest commit
 - run: |
@@ -263,8 +265,6 @@ fi
   env:
     API_KEY: ${{ secrets.API_KEY }}
 ```
-
-<!-- TODO: add an AWS Lambda example -->
 
 ## Telemetry
 
