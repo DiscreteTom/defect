@@ -6,24 +6,26 @@ on:
         required: true
 
 jobs:
-  publish:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+  build:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: DiscreteTom/setup-rust-cross@v0.1.0
 
-      - run: cargo build --release
+      - run: |
+          cross build --release --target x86_64-unknown-linux-musl
+          mv target/x86_64-unknown-linux-musl/release/defect target/x86_64-unknown-linux-musl/release/defect-x86_64
+      - run: |
+          cross build --release --target aarch64-unknown-linux-musl
+          mv target/aarch64-unknown-linux-musl/release/defect target/aarch64-unknown-linux-musl/release/defect-aarch64
+      - run: |
+          cross build --release --target x86_64-pc-windows-gnu
+          mv target/x86_64-pc-windows-gnu/release/defect.exe target/x86_64-pc-windows-gnu/release/defect-x86_64.exe
 
-      # upload to release
-      - run: gh release upload ${{ inputs.version }} target/release/defect.exe
-        if: ${{ matrix.os == 'windows-latest' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: gh release upload ${{ inputs.version }} target/release/defect
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+      - run: |
+          gh release upload ${{ inputs.version }} target/x86_64-unknown-linux-musl/release/defect-x86_64
+          gh release upload ${{ inputs.version }} target/aarch64-unknown-linux-musl/release/defect-aarch64
+          gh release upload ${{ inputs.version }} target/x86_64-pc-windows-gnu/release/defect-x86_64.exe
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
