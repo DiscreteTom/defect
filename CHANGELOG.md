@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - OpenAI client will read the api key from `OPENAI_API_KEY` instead of `DEFECT_API_KEY`.
 - OpenAI client will read the endpoint overrides from environment variable `OPENAI_API_BASE` instead of CLI option.
+- Changed the default schema name to `openai` instead of `open-ai`.
 
 ### Removed
 

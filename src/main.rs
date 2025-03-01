@@ -10,6 +10,7 @@ use tracing_subscriber::{EnvFilter, FmtSubscriber};
 #[derive(Default, Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
 enum Schema {
   #[default]
+  #[clap(name = "openai")]
   OpenAI,
   Bedrock,
 }
