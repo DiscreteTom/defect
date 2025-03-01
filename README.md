@@ -234,7 +234,7 @@ fi
 
 # download the latest defect binary
 - run: |
-    wget https://github.com/DiscreteTom/defect/releases/download/v0.2.0/defect-x86_64
+    wget https://github.com/DiscreteTom/defect/releases/download/v0.3.0/defect-x86_64
     mv defect-x86_64 defect
     chmod +x defect
 
