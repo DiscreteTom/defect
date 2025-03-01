@@ -8,24 +8,32 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-musl
+            artifact: defect-x86_64
+            extension: ""
+          - target: aarch64-unknown-linux-musl
+            artifact: defect-aarch64
+            extension: ""
+          - target: x86_64-pc-windows-gnu
+            artifact: defect-x86_64
+            extension: ".exe"
     steps:
       - uses: actions/checkout@v4
 
       - uses: DiscreteTom/setup-rust-cross@v0.1.1
 
-      - run: |
-          cross build --release --target x86_64-unknown-linux-musl
-          mv target/x86_64-unknown-linux-musl/release/defect target/x86_64-unknown-linux-musl/release/defect-x86_64
-      - run: |
-          cross build --release --target aarch64-unknown-linux-musl
-          mv target/aarch64-unknown-linux-musl/release/defect target/aarch64-unknown-linux-musl/release/defect-aarch64
-      - run: |
-          cross build --release --target x86_64-pc-windows-gnu
-          mv target/x86_64-pc-windows-gnu/release/defect.exe target/x86_64-pc-windows-gnu/release/defect-x86_64.exe
+      - name: Build for ${{ matrix.target }}
+        run: |
+          cross build --release --target ${{ matrix.target }}
 
-      - run: |
-          gh release upload ${{ inputs.version }} target/x86_64-unknown-linux-musl/release/defect-x86_64
-          gh release upload ${{ inputs.version }} target/aarch64-unknown-linux-musl/release/defect-aarch64
-          gh release upload ${{ inputs.version }} target/x86_64-pc-windows-gnu/release/defect-x86_64.exe
+      - name: Rename artifact
+        run: |
+          mv target/${{ matrix.target }}/release/defect${{ matrix.extension }} target/${{ matrix.target }}/release/${{ matrix.artifact }}${{ matrix.extension }}
+
+      - name: Upload artifact to release
+        run: gh release upload ${{ inputs.version }} target/${{ matrix.target }}/release/${{ matrix.artifact }}${{ matrix.extension }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
