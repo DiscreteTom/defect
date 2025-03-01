@@ -1,4 +1,4 @@
-use clap::Parser;
+use clap::{Parser, ValueEnum};
 use defect::{BedrockConfig, BedrockInvoker, Invoker, OpenAIConfig, OpenAIInvoker};
 use std::{
   env,
@@ -7,20 +7,30 @@ use std::{
 use tracing::debug;
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
-/// Call LLM in your pipeline.
+#[derive(Default, Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
+enum Schema {
+  #[default]
+  OpenAI,
+  Bedrock,
+}
+
+/// Call LLMs in your pipeline.
 /// To set an API key, use the "API_KEY" environment variable.
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
   /// The model to use.
-  /// For AWS Bedrock models, use the format "bedrock/<model-id>".
   #[arg(short, long, default_value_t = OpenAIConfig::default().model)]
   model: String,
 
   /// The endpoint to use.
-  /// Only used for OpenAI (or compatible) models.
+  /// Only effective for OpenAI compatible models.
   #[arg(short, long, default_value_t = OpenAIConfig::default().endpoint)]
   endpoint: String,
+
+  /// The API schema to use.
+  #[arg(short, long, value_enum, default_value_t = Schema::OpenAI)]
+  schema: Schema,
 
   /// The prompt to use.
   /// If not provided or equal to "-", the program will read from stdin.
@@ -57,23 +67,25 @@ async fn main() {
     }
   };
 
-  let bedrock_prefix = "bedrock/";
-  if args.model.starts_with(bedrock_prefix) {
-    let model = args.model[bedrock_prefix.len()..].to_string();
-    debug!("Using Bedrock model: {}", model);
-    BedrockInvoker::new(BedrockConfig { model })
-      .await
+  debug!("Using schema: {:?}", args.schema);
+  match args.schema {
+    Schema::Bedrock => {
+      debug!("Using Bedrock model: {}", args.model);
+      BedrockInvoker::new(BedrockConfig { model: args.model })
+        .await
+        .invoke(prompt)
+        .await;
+    }
+    Schema::OpenAI => {
+      debug!("Using OpenAI model: {}", args.model);
+      debug!("Using OpenAI endpoint: {}", args.endpoint);
+      OpenAIInvoker::new(OpenAIConfig {
+        model: args.model,
+        endpoint: args.endpoint,
+        api_key,
+      })
       .invoke(prompt)
       .await;
-  } else {
-    debug!("Using OpenAI model: {}", args.model);
-    debug!("Using OpenAI endpoint: {}", args.endpoint);
-    OpenAIInvoker::new(OpenAIConfig {
-      model: args.model,
-      endpoint: args.endpoint,
-      api_key,
-    })
-    .invoke(prompt)
-    .await;
+    }
   }
 }

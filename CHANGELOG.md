@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add pre-built static-linked binaries for x86_64 linux, aarch64 linux and x86_64 windows.
+- Add CLI option `schema`.
+
+### Changed
+
+- To call AWS Bedrock, the CLI option `schema` is required.
 
 ## [0.1.0] - 2025-02-23
 
