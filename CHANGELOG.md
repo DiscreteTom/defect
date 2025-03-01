@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Streaming output for OpenAI (or compatible) models.
 
+### Changed
+
+- OpenAI client will read the api key from `OPENAI_API_KEY` instead of `DEFECT_API_KEY`.
+- OpenAI client will read the endpoint overrides from environment variable `OPENAI_API_BASE` instead of CLI option.
+
+### Removed
+
+- Remove the `endpoint` CLI option.
+
 ## [0.2.0] - 2025-03-01
 
 ### Added
