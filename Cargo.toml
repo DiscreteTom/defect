@@ -12,3 +12,6 @@ tokio = { version = "1", features = ["full"] }
 clap = { version = "4.5.30", features = ["derive"] }
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 openssl = { version = "0.10", features = ["vendored"] }
+
+[dev-dependencies]
+serial_test = "3"
