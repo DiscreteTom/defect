@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2025-03-02
+
 ### Added
 
 - New CLI option `-S/--system` to specify system instructions.
@@ -50,7 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `Invoker`, `OpenAIInvoker`, `BedrockInvoker`, `OpenAIConfig`, `BedrockConfig`.
 - Add a binary executable `defect`.
 
-[unreleased]: https://github.com/DiscreteTom/defect/compare/v0.3.0...HEAD
+[unreleased]: https://github.com/DiscreteTom/defect/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/DiscreteTom/defect/releases/tag/v0.3.1
 [0.3.0]: https://github.com/DiscreteTom/defect/releases/tag/v0.3.0
 [0.2.0]: https://github.com/DiscreteTom/defect/releases/tag/v0.2.0
 [0.1.0]: https://github.com/DiscreteTom/defect/releases/tag/v0.1.0

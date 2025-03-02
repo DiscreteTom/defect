@@ -14,9 +14,9 @@ Call LLMs in your pipeline, e.g. local [git hook](#git-hook), [GitHub Actions](#
 ## Installation
 
 ```bash
-wget https://github.com/DiscreteTom/defect/releases/download/v0.3.0/defect-v0.3.0-x86_64-unknown-linux-musl.zip
-unzip defect-v0.3.0-x86_64-unknown-linux-musl.zip
-rm defect-v0.3.0-x86_64-unknown-linux-musl.zip
+wget https://github.com/DiscreteTom/defect/releases/download/v0.3.1/defect-v0.3.1-x86_64-unknown-linux-musl.zip
+unzip defect-v0.3.1-x86_64-unknown-linux-musl.zip
+rm defect-v0.3.1-x86_64-unknown-linux-musl.zip
 chmod +x defect
 ```
 
@@ -236,9 +236,9 @@ fi
 
 # download the latest defect binary
 - run: |
-    wget https://github.com/DiscreteTom/defect/releases/download/v0.3.0/defect-v0.3.0-x86_64-unknown-linux-musl.zip
-    unzip defect-v0.3.0-x86_64-unknown-linux-musl.zip
-    rm defect-v0.3.0-x86_64-unknown-linux-musl.zip
+    wget https://github.com/DiscreteTom/defect/releases/download/v0.3.1/defect-v0.3.1-x86_64-unknown-linux-musl.zip
+    unzip defect-v0.3.1-x86_64-unknown-linux-musl.zip
+    rm defect-v0.3.1-x86_64-unknown-linux-musl.zip
     chmod +x defect
 
 # get the diff of the latest commit
