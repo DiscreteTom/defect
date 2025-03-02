@@ -29,10 +29,7 @@ fn create_system_messages(text: Vec<String>) -> Option<Vec<SystemContentBlock>> 
   if text.is_empty() {
     None
   } else {
-    let blocks = text
-      .into_iter()
-      .map(|text| SystemContentBlock::Text(text))
-      .collect();
+    let blocks = text.into_iter().map(SystemContentBlock::Text).collect();
     debug!("{:?}", blocks);
     Some(blocks)
   }
