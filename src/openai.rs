@@ -13,8 +13,15 @@ use tracing::{debug, trace};
 pub async fn invoke_openai(model: String, text: String) {
   let credentials = get_credentials();
   let messages = create_messages(text);
-  let mut chat_stream = create_chat_stream(&model, messages, credentials).await;
-  process_stream(&mut chat_stream).await;
+
+  let mut stream = ChatCompletionDelta::builder(&model, messages)
+    .credentials(credentials)
+    .create_stream()
+    .await
+    .unwrap();
+  debug!("{:?}", stream);
+
+  handle_stream(&mut stream).await;
 }
 
 /// Gets the OpenAI API credentials from environment variables.
@@ -39,24 +46,9 @@ fn create_messages(text: String) -> Vec<ChatCompletionMessage> {
   messages
 }
 
-/// Creates a chat stream with the given model, messages, and credentials.
-async fn create_chat_stream(
-  model: &str,
-  messages: Vec<ChatCompletionMessage>,
-  credentials: Credentials,
-) -> Receiver<ChatCompletionGeneric<ChatCompletionChoiceDelta>> {
-  ChatCompletionDelta::builder(model, messages)
-    .credentials(credentials)
-    .create_stream()
-    .await
-    .unwrap()
-}
-
 /// Processes the chat stream and prints the content.
-async fn process_stream(
-  chat_stream: &mut Receiver<ChatCompletionGeneric<ChatCompletionChoiceDelta>>,
-) {
-  while let Some(delta) = chat_stream.recv().await {
+async fn handle_stream(stream: &mut Receiver<ChatCompletionGeneric<ChatCompletionChoiceDelta>>) {
+  while let Some(delta) = stream.recv().await {
     trace!("{:?}", delta);
     let choice = &delta.choices[0];
 
@@ -137,7 +129,7 @@ mod tests {
     drop(tx);
 
     // This should panic
-    process_stream(&mut rx).await;
+    handle_stream(&mut rx).await;
   }
 
   #[tokio::test]
@@ -173,6 +165,6 @@ mod tests {
     });
 
     // Process the stream - should panic after the first message due to no finish_reason
-    process_stream(&mut rx).await;
+    handle_stream(&mut rx).await;
   }
 }
