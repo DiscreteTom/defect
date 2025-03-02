@@ -36,6 +36,7 @@ Arguments:
 Options:
   -m, --model <MODEL>    The model to use [default: gpt-4o]
   -s, --schema <SCHEMA>  The API schema to use [default: openai] [possible values: openai, bedrock]
+  -S, --system <SYSTEM>  Optional system instructions
   -h, --help             Print help
   -V, --version          Print version
 ```

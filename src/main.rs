@@ -37,11 +37,11 @@ async fn main() {
   match args.schema {
     Schema::Bedrock => {
       debug!("Using Bedrock model: {}", args.model);
-      invoke_bedrock(args.model, prompt).await;
+      invoke_bedrock(args.model, args.system, prompt).await;
     }
     Schema::OpenAI => {
       debug!("Using OpenAI model: {}", args.model);
-      invoke_openai(args.model, prompt).await;
+      invoke_openai(args.model, args.system, prompt).await;
     }
   }
 }

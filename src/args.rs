@@ -20,6 +20,10 @@ pub struct Args {
   #[arg(short, long, value_enum, default_value_t = Schema::OpenAI)]
   pub schema: Schema,
 
+  /// Optional system instructions.
+  #[arg(short = 'S', long)]
+  pub system: Vec<String>,
+
   /// The prompt to use.
   /// If not provided or equal to "-", the program will read from stdin.
   pub prompt: Option<String>,

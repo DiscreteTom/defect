@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- New CLI option `-S/--system` to specify system instructions.
+
 ### Changed
 
 - The pre-built binaries are zipped.

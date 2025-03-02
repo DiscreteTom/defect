@@ -9,10 +9,10 @@ use std::env;
 use tokio::sync::mpsc::Receiver;
 use tracing::{debug, trace};
 
-/// Invokes the OpenAI API with the given model and text.
-pub async fn invoke_openai(model: String, text: String) {
+/// Invokes the OpenAI API with the given model, system instructions and user messages.
+pub async fn invoke_openai(model: String, system: Vec<String>, text: String) {
   let credentials = get_credentials();
-  let messages = create_messages(text);
+  let messages = create_messages(system, text);
 
   let mut stream = ChatCompletionDelta::builder(&model, messages)
     .credentials(credentials)
@@ -36,12 +36,22 @@ fn get_credentials() -> Credentials {
 }
 
 /// Creates a message vector with the provided text.
-fn create_messages(text: String) -> Vec<ChatCompletionMessage> {
-  let messages = vec![ChatCompletionMessage {
+fn create_messages(system: Vec<String>, text: String) -> Vec<ChatCompletionMessage> {
+  let mut messages = system
+    .into_iter()
+    .map(|s| ChatCompletionMessage {
+      role: ChatCompletionMessageRole::System,
+      content: Some(s),
+      ..Default::default()
+    })
+    .collect::<Vec<_>>();
+
+  messages.push(ChatCompletionMessage {
     role: ChatCompletionMessageRole::User,
     content: Some(text),
     ..Default::default()
-  }];
+  });
+
   debug!("{:?}", messages);
   messages
 }
@@ -74,11 +84,19 @@ mod tests {
   #[test]
   fn test_create_messages() {
     let text = "Hello, world!".to_string();
-    let messages = create_messages(text.clone());
+    let messages = create_messages(vec![], text.clone());
 
     assert_eq!(messages.len(), 1);
     assert_eq!(messages[0].role, ChatCompletionMessageRole::User);
-    assert_eq!(messages[0].content, Some(text));
+    assert_eq!(messages[0].content, Some(text.clone()));
+
+    let system = vec!["System message".to_string()];
+    let messages = create_messages(system, text.clone());
+    assert_eq!(messages.len(), 2);
+    assert_eq!(messages[0].role, ChatCompletionMessageRole::System);
+    assert_eq!(messages[0].content, Some("System message".to_string()));
+    assert_eq!(messages[1].role, ChatCompletionMessageRole::User);
+    assert_eq!(messages[1].content, Some(text));
   }
 
   #[test]
