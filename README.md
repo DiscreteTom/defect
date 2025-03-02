@@ -26,7 +26,7 @@ See the [latest GitHub releases](https://github.com/DiscreteTom/defect/releases/
 
 ```bash
 $ defect --help
-Call LLMs in your pipeline
+Call LLMs in your pipeline, print the text response to stdout
 
 Usage: defect [OPTIONS] [PROMPT]
 

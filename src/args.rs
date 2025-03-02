@@ -8,7 +8,7 @@ pub enum Schema {
   Bedrock,
 }
 
-/// Call LLMs in your pipeline.
+/// Call LLMs in your pipeline, print the text response to stdout.
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 pub struct Args {
