@@ -1,36 +1,14 @@
+mod args;
 mod bedrock;
 mod openai;
 
-use self::{bedrock::invoke_bedrock, openai::invoke_openai};
-use clap::{Parser, ValueEnum};
+use args::{Args, Schema};
+use bedrock::invoke_bedrock;
+use clap::Parser;
+use openai::invoke_openai;
 use std::io::{stderr, stdin, Read};
 use tracing::debug;
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
-
-#[derive(Default, Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
-enum Schema {
-  #[default]
-  #[clap(name = "openai")]
-  OpenAI,
-  Bedrock,
-}
-
-/// Call LLMs in your pipeline.
-#[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
-struct Args {
-  /// The model to use.
-  #[arg(short, long, default_value_t = String::from("gpt-4o"))]
-  model: String,
-
-  /// The API schema to use.
-  #[arg(short, long, value_enum, default_value_t = Schema::OpenAI)]
-  schema: Schema,
-
-  /// The prompt to use.
-  /// If not provided or equal to "-", the program will read from stdin.
-  prompt: Option<String>,
-}
 
 #[tokio::main]
 async fn main() {
