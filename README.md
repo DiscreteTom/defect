@@ -296,7 +296,7 @@ if [ "$output" != "OK" ]; then
   You should output a JSON object with the following format:
 
   <format>
-  {"suggestions": 123}
+  {\"suggestions\": 123}
   </format>
 
   You should only output the JSON object with nothing else.
