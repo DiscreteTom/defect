@@ -13,6 +13,8 @@ Call LLMs in your pipeline, e.g. local [git hook](#git-hook), [GitHub Actions](#
 
 ## Installation
 
+Just download the pre-built binary. E.g. for Linux x86_64 environment:
+
 ```bash
 wget https://github.com/DiscreteTom/defect/releases/download/v0.3.1/defect-v0.3.1-x86_64-unknown-linux-musl.zip
 unzip defect-v0.3.1-x86_64-unknown-linux-musl.zip
@@ -21,6 +23,9 @@ chmod +x defect
 ```
 
 See the [latest GitHub releases](https://github.com/DiscreteTom/defect/releases/latest) page for more pre-built binaries.
+
+> [!IMPORTANT]
+> Remember to include the binary in your `PATH`.
 
 ## Usage
 
@@ -60,6 +65,8 @@ defect --model=deepseek/deepseek-r1 "who are you"
 # Make sure you have AWS credentials set up.
 defect --schema bedrock --model=anthropic.claude-3-5-sonnet-20240620-v1:0 "who are you"
 ```
+
+> To set AWS credentials, you can use [environment variables](https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-envvars.html), or [use AWS CLI](https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-files.html#cli-configure-files-methods). See AWS official documentations for more information.
 
 ## Prompt Engineering
 
