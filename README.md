@@ -264,14 +264,9 @@ jobs:
           cat /tmp/diff
 
       - name: Setup defect
-        run: |
-          mkdir -p /tmp/defect
-          cd /tmp/defect
-          wget https://github.com/DiscreteTom/defect/releases/download/v0.3.2/defect-v0.3.2-x86_64-unknown-linux-musl.zip
-          unzip defect-v0.3.2-x86_64-unknown-linux-musl.zip
-          rm defect-v0.3.2-x86_64-unknown-linux-musl.zip
-          chmod +x defect
-          echo /tmp/defect >> $GITHUB_PATH
+        uses: DiscreteTom/setup-defect@v0.1.1
+        with:
+          version: "0.3.2"
 
       - name: Review the diff using defect
         env:
