@@ -66,7 +66,7 @@ defect --model=deepseek/deepseek-r1 "who are you"
 defect --schema bedrock --model=anthropic.claude-3-5-sonnet-20240620-v1:0 "who are you"
 ```
 
-> To set AWS credentials, you can use [environment variables](https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-envvars.html), or [use AWS CLI](https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-files.html#cli-configure-files-methods). See AWS official documentations for more information.
+> To set AWS credentials, you can [use environment variables](https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-envvars.html), or [use AWS CLI](https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-files.html#cli-configure-files-methods). See AWS official documentations for more information.
 
 ## Prompt Engineering
 
@@ -75,6 +75,7 @@ The functionality of this tool is highly dependent on the prompt you provide.
 You can construct complex prompts in bash scripts and pass it to the tool.
 
 ```bash
+# insert the content of a file by using string interpolation in bash
 prompt="Summarize the file. <file>`cat README.md`</file>"
 defect "$prompt"
 ```
@@ -98,16 +99,18 @@ Review the following code and give me suggestions.
 </details>
 
 <details>
-<summary>Code Review with Guideline</summary>
+<summary>Code Review with a Guideline</summary>
+
+Your team may have a coding guideline. You can insert the guideline into the prompt.
 
 ```bash
 prompt="
 You are a coding expert.
-Review the following code following my provided guideline
+Review the code below following my provided guideline
 and give me suggestions.
 
 <guideline>
-`cat guideline.md`
+`cat guideline.md 2>/dev/null || curl https://your-server.com/guideline.md`
 </guideline>
 
 <code>
@@ -197,6 +200,8 @@ fi
 
 ### Git Hook
 
+You can review your code locally via git hooks to reduce the feedback loop time, instead of waiting for CI/CD.
+
 An example of `pre-commit` hook:
 
 ```bash
@@ -235,47 +240,92 @@ fi
 
 ### GitHub Actions
 
+Review each commit:
+
 ```yaml
-# fetch 2 commits
-- uses: actions/checkout@v4
-  with:
-    fetch-depth: 2
+on:
+  push:
+    # only trigger on branches, not on tags
+    branches: "**"
 
-# download the latest defect binary
-- run: |
-    wget https://github.com/DiscreteTom/defect/releases/download/v0.3.2/defect-v0.3.2-x86_64-unknown-linux-musl.zip
-    unzip defect-v0.3.2-x86_64-unknown-linux-musl.zip
-    rm defect-v0.3.2-x86_64-unknown-linux-musl.zip
-    chmod +x defect
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      # fetch at least 2 commits so we can get the diff of the latest commit
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
-# get the diff of the latest commit
-- run: |
-    git diff -U100 HEAD^ HEAD > diff
+      # get the diff of the latest commit with 100 lines of context
+      - name: Get the diff
+        run: |
+          git diff -U100 HEAD^ HEAD > /tmp/diff
+          cat /tmp/diff
 
-# review the diff
-- run: |
-    diff=$(cat diff)
+      - name: Setup defect
+        run: |
+          mkdir -p /tmp/defect
+          cd /tmp/defect
+          wget https://github.com/DiscreteTom/defect/releases/download/v0.3.2/defect-v0.3.2-x86_64-unknown-linux-musl.zip
+          unzip defect-v0.3.2-x86_64-unknown-linux-musl.zip
+          rm defect-v0.3.2-x86_64-unknown-linux-musl.zip
+          chmod +x defect
+          echo /tmp/defect >> $GITHUB_PATH
 
-    prompt="
-    You are a coding expert.
-    Review the following code diff and give me suggestions.
+      - name: Review the diff using defect
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          diff=$(cat /tmp/diff)
 
-    If you think the code is correct, output 'OK' with nothing else.
-    Otherwise, output suggestions in markdown format.
+          prompt="
+          You are a coding expert.
+          Review the following code diff and give me suggestions.
 
-    <diff>
-    $diff
-    </diff>
-    "
+          If you think the code is correct, output 'OK' with nothing else.
+          Otherwise, output suggestions in markdown format.
 
-    output=$(./defect "$prompt")
+          <diff>
+          $diff
+          </diff>
+          "
 
-    if [ "$output" != "OK" ]; then
-      echo "$output"
-      exit 1
-    fi
-  env:
-    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          defect "$prompt" > /tmp/suggestions
+          cat /tmp/suggestions
+
+      - name: Abort if suggestions are not empty
+        run: |
+          suggestions=$(cat /tmp/suggestions)
+
+          if [ "$suggestions" != "OK" ]; then
+            exit 1
+          fi
+```
+
+Review each PR (get the diff between the PR branch and the base branch):
+
+```yaml
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch the origin/main branch
+        run: |
+          git fetch origin main:refs/remotes/origin/main
+
+      - name: Get the diff
+        run: |
+          git diff origin/main HEAD > /tmp/diff
+          cat /tmp/diff
+
+      # ...
 ```
 
 ## Telemetry
@@ -292,7 +342,7 @@ To collect the LLM response data, just send the response to your own server or w
 if [ "$output" != "OK" ]; then
   echo "$output"
 
-  # e.g. with a webhook callback
+  # e.g. send telemetry with a webhook callback
   curl -X POST -d "some-data" https://your-server.com/webhook
 
   # e.g. convert output to metrics using LLM
@@ -322,6 +372,12 @@ if [ "$output" != "OK" ]; then
   exit 1
 fi
 ```
+
+## Cost Optimization
+
+Tips to save your money:
+
+- Use cheaper models for frequent tasks. E.g. review commits with DeepSeek models while review PRs with Claude models.
 
 ## Demo
 
