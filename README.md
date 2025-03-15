@@ -16,9 +16,9 @@ Call LLMs in your pipeline, e.g. local [git hook](#git-hook), [GitHub Actions](#
 Just download the pre-built binary. E.g. for Linux x86_64 environment:
 
 ```bash
-wget https://github.com/DiscreteTom/defect/releases/download/v0.3.2/defect-v0.3.2-x86_64-unknown-linux-musl.zip
-unzip defect-v0.3.2-x86_64-unknown-linux-musl.zip
-rm defect-v0.3.2-x86_64-unknown-linux-musl.zip
+wget https://github.com/DiscreteTom/defect/releases/download/v0.3.3/defect-v0.3.3-x86_64-unknown-linux-musl.zip
+unzip defect-v0.3.3-x86_64-unknown-linux-musl.zip
+rm defect-v0.3.3-x86_64-unknown-linux-musl.zip
 chmod +x defect
 ```
 
@@ -266,7 +266,7 @@ jobs:
       - name: Setup defect
         uses: DiscreteTom/setup-defect@v0.1.1
         with:
-          version: "0.3.2"
+          version: "0.3.3"
 
       - name: Review the diff using defect
         env:

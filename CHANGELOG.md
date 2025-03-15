@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.3] - 2025-03-15
+
 ## Added
 
 - Auto correct the `OPENAI_API_BASE` if it doesn't ends with `/`.
@@ -62,7 +64,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `Invoker`, `OpenAIInvoker`, `BedrockInvoker`, `OpenAIConfig`, `BedrockConfig`.
 - Add a binary executable `defect`.
 
-[unreleased]: https://github.com/DiscreteTom/defect/compare/v0.3.2...HEAD
+[unreleased]: https://github.com/DiscreteTom/defect/compare/v0.3.3...HEAD
+[0.3.3]: https://github.com/DiscreteTom/defect/releases/tag/v0.3.3
 [0.3.2]: https://github.com/DiscreteTom/defect/releases/tag/v0.3.2
 [0.3.1]: https://github.com/DiscreteTom/defect/releases/tag/v0.3.1
 [0.3.0]: https://github.com/DiscreteTom/defect/releases/tag/v0.3.0
