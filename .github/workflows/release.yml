@@ -16,7 +16,8 @@ jobs:
 
       - name: Ensure the latest version is in CHANGELOG
         run: |
-          grep -q "## \[${{ github.ref_name }}\]" CHANGELOG.md || (echo "Version not found in CHANGELOG" && exit 1)
+          VERSION=`cargo metadata --format-version=1 --no-deps | jq '.packages[0].version' | tr -d '"'`
+          grep -q "## \[$VERSION\]" CHANGELOG.md || (echo "Version not found in CHANGELOG" && exit 1)
 
       - name: Fetch previous tag
         run: |
