@@ -240,6 +240,8 @@ fi
 
 ### GitHub Actions
 
+There is a [setup-defect](https://github.com/DiscreteTom/setup-defect) action available to simplify the setup process.
+
 Review each commit:
 
 ```yaml
