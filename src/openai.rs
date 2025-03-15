@@ -151,7 +151,11 @@ fn get_credentials() -> (String, String) {
   let api_key = env::var("OPENAI_API_KEY").expect("OPENAI_API_KEY must be set");
   debug!("OPENAI_API_KEY length: {}", api_key.len());
 
-  let base_url = env::var("OPENAI_API_BASE").unwrap_or("https://api.openai.com/v1/".to_string());
+  let mut base_url =
+    env::var("OPENAI_API_BASE").unwrap_or("https://api.openai.com/v1/".to_string());
+  if !base_url.ends_with('/') {
+    base_url.push('/');
+  }
   debug!("OPENAI_API_BASE: {}", base_url);
 
   (api_key, base_url)
@@ -215,6 +219,19 @@ mod tests {
     // Set test env vars
     env::set_var("OPENAI_API_KEY", "test_key");
     env::set_var("OPENAI_API_BASE", "https://test.api.com/v1/");
+
+    let (api_key, base_url) = get_credentials();
+
+    assert_eq!(api_key, "test_key");
+    assert_eq!(base_url, "https://test.api.com/v1/");
+  }
+
+  #[test]
+  #[serial]
+  fn test_get_credentials_with_custom_base_url_no_slash() {
+    // Set test env vars
+    env::set_var("OPENAI_API_KEY", "test_key");
+    env::set_var("OPENAI_API_BASE", "https://test.api.com/v1");
 
     let (api_key, base_url) = get_credentials();
 

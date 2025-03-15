@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Added
+
+- Auto correct the `OPENAI_API_BASE` if it doesn't ends with `/`.
+
 ## [0.3.2] - 2025-03-13
 
 ### Added
