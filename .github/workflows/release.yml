@@ -2,51 +2,103 @@ on:
   push:
     tags:
       - "v*.*.*"
-  workflow_dispatch:
-    inputs:
-      version:
-        description: "Version of the release, should match an existing tag name. E.g. v0.1.0"
-        required: true
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    env:
-      VERSION: ""
     steps:
       - uses: actions/checkout@v4
 
-      # set the version to the input. if the input is not set (triggered by tag), it will be the tag name
-      - run: echo "VERSION=${{ inputs.version || github.ref_name }}" >> $GITHUB_ENV
-
-      # validate crate version
-      - run: |
+      - name: Ensure the version in Cargo.toml is correct
+        run: |
           VERSION=`cargo metadata --format-version=1 --no-deps | jq '.packages[0].version' | tr -d '"'`
-          [ "v$VERSION" = "${{ env.VERSION }}" ] || (echo "Version mismatch" && exit 1)
+          [ "v$VERSION" = "${{ github.ref_name }}" ] || (echo "Version mismatch" && exit 1)
 
-      # validate CHANGELOG version
-      # TODO: use a CHANGELOG linter
-      - run: |
-          VERSION=`cargo metadata --format-version=1 --no-deps | jq '.packages[0].version' | tr -d '"'`
-          grep -q "## \[$VERSION\]" CHANGELOG.md || (echo "Version not found in CHANGELOG" && exit 1)
+      - name: Ensure the latest version is in CHANGELOG
+        run: |
+          grep -q "## \[${{ github.ref_name }}\]" CHANGELOG.md || (echo "Version not found in CHANGELOG" && exit 1)
 
+      - name: Fetch previous tag
+        run: |
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+          git tag -l 'v*' | sort -V | tail -n 2 | head -n 1 > /tmp/previous-tag
+
+      - name: Fetch the commit of the previous tag
+        run: |
+          git fetch --depth=1 origin $(cat /tmp/previous-tag)
+
+      - name: Ensure the previous version is not in README
+        run: |
+          grep -q "$(cat /tmp/previous-tag)" README.md && (echo "Previous version found in README" && exit 1)
+
+      # check code
       - uses: actions-rust-lang/setup-rust-toolchain@v1
-
       - run: cargo fmt --check
-
       - run: cargo clippy -- -D warnings
-
       - run: cargo test
-
       - run: cargo doc --no-deps
         env:
           RUSTDOCFLAGS: -D warnings
 
+      - name: Get diff
+        run: |
+          git diff $(cat /tmp/previous-tag)..HEAD -U30 CHANGELOG.md src > /tmp/diff.txt
+          cat /tmp/diff.txt
+
+      - name: Setup defect
+        run: |
+          cargo build
+          mkdir -p /tmp/defect
+          cp target/debug/defect /tmp/defect/defect
+          echo /tmp/defect >> $GITHUB_PATH
+
+      - name: Review the diff
+        env:
+          OPENAI_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          OPENAI_API_BASE: https://api.deepseek.com/
+        run: |
+          diff=$(cat /tmp/diff.txt)
+
+          prompt="
+          You are a coding expert.
+          Review the following diff, only ensure that:
+          - For CHANGELOG
+            - Nothing is under [Unreleased] section. The section should exist but be empty.
+            - The version number of the latest section is correct.
+            - Links at the bottom are updated and correct.
+            - All "Added"/"Changed"/"Fixed"/"Removed" etc sections are h3.
+          - For all rust code
+            - Ensure comments adhere to the functionality of the code.
+          - Ignore all other files.
+
+          If you think the diff is correct, output 'OK' with nothing else.
+          Otherwise, output suggestions in markdown format.
+
+          <latest_version>
+          ${{ github.ref_name }}
+          </latest_version>
+
+          <diff>
+          $diff
+          </diff>
+          "
+
+          defect --model=deepseek-chat "$prompt" > /tmp/suggestions
+          cat /tmp/suggestions
+
+      - name: Abort if suggestions are not empty
+        run: |
+          suggestions=$(cat /tmp/suggestions)
+
+          if [ "$suggestions" != "OK" ]; then
+            exit 1
+          fi
+
       # create the release
-      - run: gh release create ${{ env.VERSION }} -t ${{ env.VERSION }} --verify-tag -n "See [CHANGELOG.md](https://github.com/DiscreteTom/defect/blob/main/CHANGELOG.md)."
+      - run: gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} --verify-tag -n "See [CHANGELOG.md](https://github.com/DiscreteTom/defect/blob/main/CHANGELOG.md)."
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: gh workflow run build.yml --field version="${{ env.VERSION }}"
+      - run: gh workflow run build.yml --field version="${{ github.ref_name }}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
