@@ -374,6 +374,7 @@ fi
 
 Tips to save your money:
 
+- Prevent unnecessary calls. E.g. in code review scenarios, use traditional formatters and linters before calling LLMs.
 - Use cheaper models for frequent tasks. E.g. review commits with DeepSeek models while review PRs with Claude models.
 
 ## Demo
