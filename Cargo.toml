@@ -10,7 +10,7 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 futures-util = "0.3"
 aws-config = { version = "1.5.16", features = ["behavior-version-latest"] }
-aws-sdk-bedrockruntime = { version = "1.65.0" }
+aws-sdk-bedrockruntime = { version = "1.80.0" }
 tokio = { version = "1", features = ["full"] }
 clap = { version = "4.5.30", features = ["derive"] }
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
